@@ -69,7 +69,7 @@ plot(mn_opt, 'b')
 plot(mn,'r')
 xlim([0 length(d)])
 ylim([min(d) max(d)])
-set(gca, 'xticklabel', [])
+% set(gca, 'xticklabel', [])
 ylabel('data and estimates')
 legend({'ground truth' 'data' 'optimal model' 'reduced model'})
 
@@ -77,7 +77,7 @@ axes(ax(2));
 pcolor([1:length(d)],[1:size(PP_opt,2)],log10(PP_opt'))
 shading flat
 set(gca, 'ydir', 'normal');
-set(gca, 'xticklabel', [])
+% set(gca, 'xticklabel', [])
 set(gca, 'clim', [-1.5 0])
 xlim([0 length(d)])
 ylim([0 100])

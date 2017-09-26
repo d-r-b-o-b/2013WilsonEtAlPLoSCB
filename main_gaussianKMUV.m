@@ -7,7 +7,7 @@ h = 0.05;
 l = unique(ceil(logspace(log10(1), log10(100), 20)));
 
 % setup transition matrix
-TrMat = makeTransitionMatrix_2013(l, h);
+TrMat = makeTransitionMatrix_2017(l, h);
 
 % make data
 mu_true = 0;
@@ -58,7 +58,7 @@ plot(mu_true-mn_opt,'b')
 plot(mu_true+mn_opt,'b')
 xlim([0 length(d)])
 ylim([min(d) max(d)])
-set(gca, 'xticklabel', [])
+% set(gca, 'xticklabel', [])
 
 
 
@@ -68,7 +68,7 @@ shading flat
 set(gca, 'ydir', 'normal');
 xlim([0 length(d)])
 set(gca, 'clim', [-1.5 0])
-set(gca, 'xticklabel', [])
+% set(gca, 'xticklabel', [])
 ylim([0 100])
 title('run-length distribution (optimal model)')
 ylabel('run-length')

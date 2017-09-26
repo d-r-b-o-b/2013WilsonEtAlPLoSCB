@@ -1,3 +1,3 @@
-function aUp    = bernoulli_updateSufficientStats(d, a, l)
-aUp = a .* (l-1)./l + d;
+function Xout    = bernoulli_updateSufficientStats(d, X, l)
+Xout = X .* (l-1)./l + d;
 end
