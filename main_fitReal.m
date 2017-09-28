@@ -13,7 +13,7 @@ savedir   = [maindir 'realfits/']; mkdir(savedir);
 load([datadir 'dataForBob'])
 
 
-nRepeats = 1;
+nRepeats = 100;
 
 % models to be fit
 model_list = {'full' 'nassar' '1' '2' '3'};
@@ -38,7 +38,7 @@ for mm = 1:length(model_list)
     TT(TT=='-') = '';
     TT(TT==' ') = '';
     TT(TT==':') = '';
-    for X0flag = 1:nRepeats
+    for X0flag = 3:nRepeats
         % Note X0flag codes for initial conditions ...
         %   1 => fixed initial conditions
         %   2 => fixed but logarithmic spacing of run-lengths
@@ -77,25 +77,25 @@ for mm = 1:length(model_list)
                 % switch fit function depending on model
                 switch model
                     case 'full'
-                        fit(count) = fit_opt_gaussianUMKV_v1(d, c, variance, X0flag);
+                        fit(count) = fit_opt_gaussianUMKV(d, c, variance, X0flag);
                         fit(count).subNum = subNum;
                         
                     case 'nassar'
-                        fit(count) = fit_nassar_v1(d, c, variance, X0flag);
+                        fit(count) = fit_nassar(d, c, variance, X0flag);
                         fit(count).subNum = subNum;
                         
                     case {'1' '2' '3' '4' '5'}
                         % number of nodes to be fit
                         nNodes = str2num(model);
                         
-                        fit(count) = fit_gaussianUMKV_v1(nNodes, d, c, variance, X0flag);
+                        fit(count) = fit_gaussianUMKV(nNodes, d, c, variance, X0flag);
                         fit(count).subNum = subNum;
                         
                     case {'2013n1' '2013n2' '2013n3' '2013n4' '2013n5'}
                         % number of nodes to be fit
                         nNodes = str2num(model(end));
                         
-                        fit(count) = fit_gaussianUMKV_2013_v1(nNodes, d, c, variance, X0flag);
+                        fit(count) = fit_gaussianUMKV_2013(nNodes, d, c, variance, X0flag);
                         fit(count).subNum = subNum;
                 end
                 fit(count).model = model;

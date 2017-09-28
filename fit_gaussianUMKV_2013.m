@@ -1,7 +1,7 @@
-function fit = fit_gaussianUMKV_2013_v1(nNodes, d, c, variance, X0flag)
+function fit = fit_gaussianUMKV_2013(nNodes, d, c, variance, X0flag)
 
 % setup objective function
-obFunc = @(x) obFunc_gaussianUMKV_2013_v1(x, d, c, variance);
+obFunc = @(x) obFunc_gaussianUMKV_2013(x, d, c, variance);
 
 % initial conditions
 switch X0flag

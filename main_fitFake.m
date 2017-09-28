@@ -18,6 +18,9 @@ d = dir('*.mat');
 for i = 1:length(d)
     L(i) = load(d(i).name)
 end
+
+
+
 SIM = [L.SIM];
 clear L
 
@@ -43,15 +46,14 @@ nRepeats = 1;
 % 2013n3 : 3-node model (using *incorrect* change-point prior used in original 2013 paper)
 
 models = {'full' 'nassar' '1' '2' '3'};
+% models = {'nassar' '1' '2' '3'};
 
 count = 1;
 tic
 for m = 1:length(models)
     model = models{m};
     disp(model);
-    
-    % 77:240
-    
+        
     for sim_count = 1:length(SIM)
         fprintf(1, [' sim_count = ' num2str(sim_count) '\n'])
         d = SIM(sim_count).d;

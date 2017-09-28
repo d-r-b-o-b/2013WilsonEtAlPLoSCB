@@ -1,35 +1,41 @@
-function [mn, PP, plgd] = ...
-    simulate_optimalModel(d, X, H, U, lk, M)
+function [mn, PP, plgd] = simulate_optimalModel(d, X, H, U, lk, M)
 
 plgd(1) = 1;
+pr = 1;
 
 mn(1,:) = plgd * (M(X))';
 xPrior = X;
 
 for t = 1:length(d)-1
     
-    PP(t,1:length(plgd)) = plgd;
     
-    % p(x_t | l_t, x_{1:t-1}) = likelihood
+    
+    
+    
+    % p(x_t | r_{t-1}) = likelihood
     pXgL = lk(d(t), X);
-    pXgL = pXgL' / sum(pXgL);
+    lik = pXgL' / sum(pXgL);
     
-    lik = [pXgL(1) pXgL];
+    % p(r_t | x_{1:t}) = run-length distribution
+    wNew = lik.*pr;
+    plgd = wNew / nansum(wNew);
     
     % update sufficient stats
     Xnew = U(d(t), X);
     Xup = [xPrior; Xnew];
+    X = Xup;
     
-    % prior
+    % compute prior for next time step, p(r_{t+1} | x_{1:t})
     h   = H(length(plgd));
     pr  = [plgd*h, plgd.*(1-h)'];
     
-    wNew        = lik.*pr;
-    plgd        = wNew / nansum(wNew);
+    % prediction for next time step assuming possibility of change
+    % mn(t+1,:) = pr * (M(X));
     
-    X = Xup;
+    % prediction for next time step assuming no change
+    mn(t+1,:) = [0, plgd] * (M(X));
     
-    mn(t+1,:) = plgd * (M(X));
+    PP(t,1:length(plgd)) = plgd;
     
 end
 

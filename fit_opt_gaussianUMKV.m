@@ -1,7 +1,7 @@
-function fit = fit_opt_gaussianUMKV_v1(d, c, variance, X0flag)
+function fit = fit_opt_gaussianUMKV(d, c, variance, X0flag)
 
 % setup objective function
-obFunc = @(x) obFunc_opt_gaussianUMKV_v1(x, d, c, variance);
+obFunc = @(x) obFunc_opt_gaussianUMKV(x, d, c, variance);
 
 % initial conditions
 

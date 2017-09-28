@@ -41,6 +41,7 @@ X = 0.5*l;
 
 % simulate
 [mn, PP, plgd] = simulate(d, X, l, TrMat, U, lk, M);
+E2 = mean((mn - mu_true').^2)
 
 
 lk  = @(x,y,z) gaussianUMKV_opt_likelihood(x,y,sigma_noise);
@@ -54,7 +55,7 @@ xPrior = [1 0];
 % simulate optimal model
 [mn_opt, PP_opt, plgd_opt] = ...
     simulate_optimalModel(d, xPrior, H, U, lk, M);
-
+E2_opt = mean((mn_opt - mu_true').^2)
 
 % make figure
 axes(ax(1)); hold on;

@@ -1,4 +1,4 @@
-function [E2] = obFunc_nassar_v1(X, d, c, variance)
+function [E2] = obFunc_nassar(X, d, c, variance)
 
 
 h = X(1);
@@ -15,7 +15,7 @@ if sigma_choice == 0
 end
 
 
-[B, totSig, R, pCha] = nassar_v1(d, h, variance, drift, likeWeight, 0, 150);
+[B, totSig, R, pCha] = nassar(d, h, variance, drift, likeWeight, 0, 150);
 
 % discard initial point
 B = B(2:end-1);

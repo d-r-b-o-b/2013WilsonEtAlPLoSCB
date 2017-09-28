@@ -1,7 +1,6 @@
 clear
 
 directories;
-cd(fundir{1});
 
 
 
@@ -24,8 +23,8 @@ mn(:,1) = delta_rule(d, 0.2, m(1))
 
 
 
-%% run simple delta rule with alpha = 0.5
-mn(:,2) = delta_rule(d, 0.5, m(1))
+%% run simple delta rule with alpha = 0.8
+mn(:,2) = delta_rule(d, 0.8, m(1))
 
 
 
@@ -37,13 +36,24 @@ U   = @gaussianUMKV_opt_updateSufficientStats;
 M   = @gaussianUMKV_opt_mean;
 H   = @(T) hazard_constant(T,h);
 
-% initial suff stat val (assume prior mean is true mean)
-xPrior = [1 m(1)];
+% prior 
+vp = 0.01; % strength of prior
+mp = m(1); % prior mean (set to first true mean)
+xPrior = [vp mp*vp];
 
 % simulate optimal model
 mn(:,3) = simulate_optimalModel(d, xPrior, H, U, lk, M);
 
 
+
+% figure(1); clf; 
+% ax = easy_gridOfEqualFigures([0.1 0.1 0.1], [0.1 0.03]);
+% axes(ax(1)); hold on;
+% plot(d,'.', 'markersize', 30)
+% plot(mn(:,3),'.-', 'markersize', 30)
+% axes(ax(2)); hold on;
+% imagesc(PP')
+% set(ax, 'xlim', [0 40])
 
 %% run approximate model with 2 nodes
 h = 0.1; % hazard rate
@@ -88,7 +98,7 @@ for i = 1:length(ax)
 end
 leg = legend([l1(1) l2(1)], {'generative mean' 'observed data'});
 leg(2) = legend(l3(1), 'delta rule, \alpha = 0.2');
-leg(3) = legend(l3(2), 'delta rule, \alpha = 0.5');
+leg(3) = legend(l3(2), 'delta rule, \alpha = 0.8');
 leg(4) = legend(l3(3), 'full Bayesian model');
 leg(5) = legend(l3(4), 'approximate model');
 

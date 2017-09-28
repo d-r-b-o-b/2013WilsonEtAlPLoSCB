@@ -16,7 +16,8 @@ savename = ['fakeData_' TT];
 
 count = 1;
 
-model = {'full' 'nassar' '1' '2' '3'};
+% model = {'full' 'nassar' '1' '2' '3'};
+model = {'full'};
 vc = [5 10];
 nRepeats = 1;
 for m = 1:length(model)

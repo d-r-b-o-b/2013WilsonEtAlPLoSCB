@@ -1,174 +1,106 @@
-clear
+clear 
 
-directories;
-cd(fundir{1});
+% set random seed
+rng(1);
 
+% parameters
+h = 0.05;
+T = 100;
+mu_p = 15;
+sigma_p = 5;
+sigma = 2;
 
+% sample change-point locations
+cp = find(rand(T,1) < h);
 
-%% generate observations
-% generative mean
-m(1:20,1) = 2;
-m(21:40,1) = 8;
+nChange = length(cp);
+nEpochs = nChange + 1;
 
-% generative standard deviation
-sigma = 0.5;
-h = 0.1;
-l1 = [5];
-l2 = [1.5 5];
+% sample means for each epoch
+m = mu_p + randn(nEpochs,1) * sigma_p;
 
-% generate observations
-d = m + sigma*randn(size(m));
+% create time course of true mean
+eStart = [1; cp];
+eEnd = [cp; T];
+for i = 1:length(eStart)
+    mu(eStart(i):eEnd(i)) = m(i);
+end
 
-
-
-%% run one-node model
-h = 0.1; % hazard rate
-l = [5]; % run-length
-
-% make transition matrix
-TrMat = makeTransitionMatrix_2017(l, h);
-% to switch to incorrect 2013 version uncomment following line ...
-% TrMat = makeTransitionMatrix_2013(l, h);
-
-% setup functions
-lk  = @(x,y,z) gaussianUMKV_likelihood(x,y,z,sigma);
-U   = @gaussianUMKV_updateSufficientStats;
-M   = @gaussianUMKV_mean;
-
-% initial suff stat val - set so that mean of each node is equal to true
-% mean
-X = l*m(1); 
-
-% simulate
-mn(:,1) = simulate(d, X, l, TrMat, U, lk, M);
+% create data
+d = mu + sigma * randn(size(mu));
 
 
-%% run two-node model
-h = 0.1; % hazard rate
-l = [1.5 5]; % run-length
 
-% make transition matrix
-TrMat = makeTransitionMatrix_2017(l, h);
-% to switch to incorrect 2013 version uncomment following line ...
-% TrMat = makeTransitionMatrix_2013(l, h);
-
-% setup functions
-lk  = @(x,y,z) gaussianUMKV_likelihood(x,y,z,sigma);
-U   = @gaussianUMKV_updateSufficientStats;
-M   = @gaussianUMKV_mean;
-
-% initial suff stat val - set so that mean of each node is equal to true
-% mean
-X = l*m(1); 
-
-% simulate
-[mn(:,2), P] = simulate(d, X, l, TrMat, U, lk, M);
+d_max = 30;%max(d);
 
 
 
 
-%% plot results
 figure(1); clf;
-set(gcf, 'Position', [440     1   500   400])
-ax = easy_gridOfEqualFigures([0.12  0.15 0.04], [0.14 0.03]);
+set(gcf, 'position', [753     8   650   550])
+dx = 0.1;
+dy = 0.14;
+hg = [0.09 dy dy 0.05];
+wg = [0.12 0.32];
+hb = (ones(length(hg)-1,1)-sum(hg))/(length(hg)-1);
+wb = (ones(length(wg)-1,1)-sum(wg))/(length(wg)-1);
+ax(1:3) = gridOfEqualFigures(hb, wb, hg, wg);
 
+hg2 = [hg(1) hg(2) hg(3)+hb(2)+hg(4)];
+hb2 = [hb(1) hb(2)];%(ones(length(hg2)-1,1)-sum(hg2))/(length(hg2)-1);
+wg2 = [wg(1)+wb(1)+0.1 0.03]
+wb2 = (ones(length(wg2)-1,1)-sum(wg2))/(length(wg2)-1);
+ax(4:5) = gridOfEqualFigures(hb2, wb2, hg2, wg2);
 
 axes(ax(1)); hold on;
-l0 = plot(d, '.', 'color', [1 1 1]*0.5, 'markersize', 25)
-l1 =  plot(mn);
+lcp = plot([cp cp]'-0.5, [zeros(size(cp)) ones(size(cp))]'*d_max);
 xlabel('time step')
-ylabel('data')
-
+ylabel({'change-point' 'locations'})
 
 axes(ax(2)); hold on;
-l2 = plot(P);
+lcp(:,2) = plot([cp cp]'-0.5, [zeros(size(cp)) ones(size(cp))]'*d_max);
+lmu = plot(mu);
 xlabel('time step')
-ylabel('node weight')
-
-leg = legend([l0 l1'], {'data' '1 node' '2 nodes'});
-leg(2) = legend(l2, {'p(l_1 | x_{1:t})' 'p(l_2 | x_{1:t})'});
-set(leg, 'location', 'northwest')
-
-set([l0 l1' l2'], 'linewidth', 3)
-
-set(l1(1), 'color', 'r')
-set(l1(2), 'color', 'k', 'linestyle', '--')
-
-set(l2(1), 'color', [1 1 1]*0)
-set(l2(2), 'color', [1 1 1]*0.5)
+ylabel({'generative' 'mean, \mu'})
 
 
-set(ax, 'tickdir', 'out', 'fontsize', 12', 'xlim', [0 41])
-addABCs(ax, [-0.1 0.04], 36)
-
-saveFigurePdf(gcf, '~/Desktop/Figure_5')
-
-
-
-
+axes(ax(3)); hold on;
+lcp(:,3) = plot([cp cp]'-0.5, [zeros(size(cp)) ones(size(cp))]'*d_max);
+lmu(2) = plot(mu);
+ld = plot(d, '.')
+xlabel('time step')
+ylabel('data value, x_t')
 
 
+axes(ax(4)); hold on;
+x = [0:0.01:d_max];
+y = 1 / sqrt(2*pi) /sigma_p * exp(-(x-mu_p).^2/2/sigma_p^2);
+ll = plot(y,x);
+xlabel('probability density')
+ylabel('\mu')
+tt = title('p(\mu | v_p, \chi_p)');
 
 
+axes(ax(5)); hold on;
+x = [0:0.01:d_max];
+y = 1 / sqrt(2*pi) /sigma * exp(-(x-mu(end)).^2/2/sigma^2);
+ll(2) = plot(y,x);
+xlabel('probability density')
+ylabel('x_t')
+tt(2) = title('p(x_t | \mu)');
 
+set(lcp, 'color', [1 1 1]*0.5, 'linewidth', 3)
+set(lmu, 'color', [1 1 1]*0, 'linestyle', '--', 'linewidth', 3)
+set(ld, 'color', 'r', 'markersize', 30)
+set(ll, 'color', 'k', 'linewidth', 3)
 
+set(tt, 'fontweight', 'normal')
 
+set(ax, 'ylim', [0 d_max], 'tickdir', 'out', ...
+    'fontsize', 12)
+set(ax(1:3), 'xlim', [0 100])
 
+addABCs(ax(1:3), [-0.08 0.04], 20, 'ABD')
+addABCs(ax(4:5), [-0.04 0.04], 20, 'CE')
 
-
-
-%%
-for i = 1:length(ax)
-    
-    axes(ax(i)); hold on;
-    l2(i) = plot(d, '.');
-    l1(i) = plot(m, 'k--');
-    
-    if i > 1
-        l3(i-1) = plot(mn(:,i-1));
-    end
-    xlabel('day number')
-    ylabel('stock price [$]')
-end
-leg = legend([l1(1) l2(1)], {'generative mean' 'observed data'});
-leg(2) = legend(l3(1), 'delta rule, \alpha = 0.2');
-leg(3) = legend(l3(2), 'delta rule, \alpha = 0.5');
-leg(4) = legend(l3(3), 'full Bayesian model');
-leg(5) = legend(l3(4), 'approximate model');
-
-set(leg, 'location', 'northwest', 'fontsize', 12)
-
-set([l1 l2 l3], 'linewidth', 3)
-set(l2, 'markersize', 25, 'color','r')
-set(l3, 'color', 'b')
-set(ax, 'tickdir', 'out', 'fontsize', 12')
-addABCs(ax, [-0.13 0.01], 28)
-
-saveFigurePdf(gcf, '~/Desktop/Figure_1')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+saveFigurePdf(gcf, '~/Desktop/Figure_2')

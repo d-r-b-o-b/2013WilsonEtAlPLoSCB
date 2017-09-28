@@ -1,7 +1,7 @@
 clear
 
 directories;
-cd(fundir{1});
+cd(maindir);
 
 
 
@@ -106,45 +106,6 @@ saveFigurePdf(gcf, '~/Desktop/Figure_5')
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-%%
-for i = 1:length(ax)
-    
-    axes(ax(i)); hold on;
-    l2(i) = plot(d, '.');
-    l1(i) = plot(m, 'k--');
-    
-    if i > 1
-        l3(i-1) = plot(mn(:,i-1));
-    end
-    xlabel('day number')
-    ylabel('stock price [$]')
-end
-leg = legend([l1(1) l2(1)], {'generative mean' 'observed data'});
-leg(2) = legend(l3(1), 'delta rule, \alpha = 0.2');
-leg(3) = legend(l3(2), 'delta rule, \alpha = 0.5');
-leg(4) = legend(l3(3), 'full Bayesian model');
-leg(5) = legend(l3(4), 'approximate model');
-
-set(leg, 'location', 'northwest', 'fontsize', 12)
-
-set([l1 l2 l3], 'linewidth', 3)
-set(l2, 'markersize', 25, 'color','r')
-set(l3, 'color', 'b')
-set(ax, 'tickdir', 'out', 'fontsize', 12')
-addABCs(ax, [-0.13 0.01], 28)
-
-saveFigurePdf(gcf, '~/Desktop/Figure_1')
 
 
 

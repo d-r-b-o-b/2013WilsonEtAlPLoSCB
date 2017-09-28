@@ -42,7 +42,7 @@ X = a0/(a0+b0)*l;
 %   mn is estimated mean
 %   PP is run-length distribution
 [mn, PP] = simulate(d, X, l, TrMat, U, lk, M);
-
+E2 = mean((mn - rho_true').^2)
 
 % run optimal model -------------------------------------------------------
 lk_opt  = @bernoulli_optimalModel_likelihood;
@@ -55,6 +55,9 @@ xPrior = [2 1];
 
 % simulate optimal model
 [mn_opt, PP_opt] = simulate_optimalModel(d, xPrior, H_opt, U_opt, lk_opt, M_opt);
+
+% compute mean squared error with ground true
+E2_opt = mean((mn_opt - rho_true').^2)
 
 
 % plot --------------------------------------------------------------------
@@ -79,7 +82,7 @@ set(gca, 'ydir', 'normal');
 xlim([0 length(d)])
 % set(gca, 'tickLength', [0 0])
 set(gca, 'clim', [-1.5 0])
-ylim([0 100]+0.5)
+ylim([0 100])
 % ylabel('run-length')
 % title('optimal model')
 
@@ -89,7 +92,7 @@ shading flat
 set(gca, 'ydir', 'normal');
 xlim([0 length(d)])
 set(gca, 'clim', [-1.5 0])
-ylim([0 100]+0.5)
+ylim([0 100])
 % ylabel('run-length')
 % title('reduced model')
 % xlabel('time step')

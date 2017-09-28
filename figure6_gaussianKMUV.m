@@ -27,6 +27,8 @@ X = -0.5*l;
 
 % simulate
 [mn, PP, plgd] = simulate(d, X, l, TrMat, U, lk, M);
+E2 = mean((mn-sig_true').^2)
+
 
 lk_opt  = @(x,y,z) gaussianKMUV_opt_likelihood(x,y,mu_true);
 U_opt   = @(x,y) gaussianKMUV_opt_updateSufficientStats(x,y,mu_true);
@@ -39,7 +41,7 @@ xPrior = [1 -1];
 % simulate optimal model
 [mn_opt, PP_opt, plgd_opt] = ...
     simulate_optimalModel(d, xPrior, H_opt, U_opt, lk_opt, M_opt);
-
+E2_opt = mean((mn_opt-sig_true').^2)
 
 axes(ax(1)); hold on;
 ll  = plot(d, 'r.');

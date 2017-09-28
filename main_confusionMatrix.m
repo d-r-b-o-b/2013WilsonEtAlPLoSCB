@@ -11,15 +11,16 @@ savedir   = [maindir 'fakefits/'];
 cd(savedir)
 d = dir('*.mat');
 for i = 1:length(d)
-L(i) = load(d(i).name, 'FIT');
+    L(i) = load(d(i).name, 'FIT');
 end
 
 FIT = [L.FIT];
+
 clear L
 
 
 
-%% excedance probability confusion matrices
+%% exceedance probability confusion matrices
 clear alpha xp exp_r
 
 
@@ -92,10 +93,30 @@ colormap gray
 cc = colormap;
 colormap(1-cc)
 addABCs(ax, [-0.1 0.25], 48)
-axes(ax(1)); title('fraction best fit', 'fontsize', 30, 'fontweight', 'normal')
-axes(ax(2)); title('excedance probability', 'fontsize', 30, 'fontweight', 'normal')
-% saveFigurePdf(gcf, '~/Desktop/confusionMatrix')
+axes(ax(1)); title('model probability', 'fontsize', 30, 'fontweight', 'normal')
+axes(ax(2)); title('exceedance probability', 'fontsize', 30, 'fontweight', 'normal')
+saveFigurePdf(gcf, '~/Desktop/confusionMatrix')
 
+%% parameter recovery ...
+% clear Xfit Xsim
+% mdl = '3';
+% [ax, lines] = plot_parameterRecovery(FIT, mdl, mdl);
+% set(lines.l, 'markersize', 30, 'color', [1 1 1]*0.5)
+mdl = 'full';
+switch mdl
+    case {'full' 'nassar'}
+        vname = {'h' '\sigma_d'};
+    case '1'
+        vname = {'\sigma_d' '\alpha_1'};
+    case {'2' '3'}
+        vname = {'h' '\sigma_d' '\alpha_1' '\alpha_2' '\alpha_3' };
+end
+[Xsim, Xfit] = get_parameterRecovery(FIT, mdl, mdl);
 
+[r,p] = corr(Xsim', Xfit', 'type', 'spearman');
 
-
+disp(' ')
+for i = 1:size(Xsim,1)
+    fprintf(1, '& $%s$ & $r =$ %.2f & $p =$ %.2d\\\\ \n', vname{i}, r(i,i), p(i,i))
+end
+disp(' ')

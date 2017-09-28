@@ -1,7 +1,7 @@
-function fit = fit_nassar_v1(d, c, variance, X0flag)
+function fit = fit_nassar(d, c, variance, X0flag)
 
 % setup objective function
-obFunc = @(x) obFunc_nassar_v1(x, d, c, variance);
+obFunc = @(x) obFunc_nassar(x, d, c, variance);
 
 % initial conditions
 
