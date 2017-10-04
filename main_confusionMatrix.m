@@ -41,7 +41,7 @@ for mn_sim = 1:length(mdl_sim)
         for i = 1:length(sn)
             
             ind = find([ft.simNum] == sn(i));
-            [~,i_min] = min([ft(ind).BIC]);
+            [dummy,i_min] = min([ft(ind).BIC]);
             bic(i,mn) = ft(ind(i_min)).BIC;
         end
     end

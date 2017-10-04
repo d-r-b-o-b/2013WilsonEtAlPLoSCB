@@ -1,8 +1,10 @@
 clear 
 
 % set random seed
-rng(1);
-
+try
+    % rng is not supported on older versions of matlab
+    rng(1);
+end
 % parameters
 h = 0.05;
 T = 100;
