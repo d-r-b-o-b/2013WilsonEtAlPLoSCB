@@ -26,6 +26,12 @@ To generate figures 1, 2, 5 and 6 run:
 	main_Figure6.m
 	* Note that due to different random seeds, the figures you generate will not exactly match the figures in the paper but will be close.
 
+——————————————————————————————————————————————————————————————— 
+OPTIMAL LEARNING RATES (FIGURES 8 & 9)
+
+To generate Figures 8 and 9 run:
+	Figures_8_9.m
+
 
 ——————————————————————————————————————————————————————————————— 
 CONFUSION MATRIX / ANALYSIS OF SIMULATED DATA (FIGURE 10)
